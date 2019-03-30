@@ -7,10 +7,10 @@ namespace Metro
         static void Main(string[] args)
         {
             var schema = new MetroSchema();
-            schema.Load(@"C:\Users\amx\Projects\Metro\input.txt");
+            schema.Load("input.txt");
 
-            var processor = CloseStationsProcessor.Instance;
-            processor.Process(schema, @"C:\Users\amx\Projects\Metro\output.txt");
+            var processor = new CloseStationsProcessor("output.txt");
+            processor.Process(schema);
 
             Console.WriteLine("См. файл output.txt");
         }

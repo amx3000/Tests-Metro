@@ -1,37 +1,31 @@
 using System;
 using System.IO;
-using System.Linq;
 using System.Text;
 
 namespace Metro
 {
-    public class CloseStationsProcessor
+    public class CloseStationsProcessor : CloseStationsProcessorBase
     {
-        public static CloseStationsProcessor Instance => new CloseStationsProcessor();
-
-        private CloseStationsProcessor()
+        public CloseStationsProcessor(string resultPath)
         {
+            
+            if (string.IsNullOrWhiteSpace(resultPath))
+                throw new ArgumentException("Недопустимое имя файла", nameof(resultPath));
+
+            ResultPath = resultPath;
         }
 
-        public void Process(MetroSchema schema, string resultPath)
+        public string ResultPath { get; }
+
+        public override void Process(MetroSchema schema)
         {
-            while (true)
-            {
-                if (schema.Stations.Count() == 0)
-                    break;
+            File.Create(ResultPath).Dispose();
 
-                var stationToDelete = schema.Stations.FirstOrDefault(s => s.LinkedStations.Count() == 1);
-                if (stationToDelete == null)
-                    throw new InvalidOperationException("Невозможно в оставшейся схеме метро найти станцию, связанную только с одной другой станцией");
-
-                AppendDeletedStationName(resultPath, stationToDelete.Name);
-                schema.Delete(stationToDelete);
-            }
+            base.Process(schema);
         }
-
-        private void AppendDeletedStationName(string resultPath, string stationName)
+        protected override void ProcessStationClose(Station station)
         {
-            File.AppendAllLines(resultPath, new[] { stationName });
+            File.AppendAllLines(ResultPath, new[] { station.Name });
         }
     }
 }
