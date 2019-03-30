@@ -13,16 +13,12 @@ namespace Metro
                 throw new ArgumentException("Недопустимое имя файла", nameof(resultPath));
 
             ResultPath = resultPath;
+            
+            File.Delete(ResultPath);
         }
 
         public string ResultPath { get; }
 
-        public override void Process(MetroSchema schema)
-        {
-            File.Create(ResultPath).Dispose();
-
-            base.Process(schema);
-        }
         protected override void ProcessStationClose(Station station)
         {
             File.AppendAllLines(ResultPath, new[] { station.Name });

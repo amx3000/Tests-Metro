@@ -5,7 +5,7 @@ namespace Metro
 {
     public abstract class CloseStationsProcessorBase
     {
-        public virtual void Process(MetroSchema schema)
+        public void Process(MetroSchema schema)
         {
             while (schema.Stations.Any())
             {
